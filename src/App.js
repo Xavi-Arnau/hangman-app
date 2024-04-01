@@ -58,11 +58,8 @@ function App() {
   }, [attempts, guesses]);
 
   const isGameOver = () => {
-    if (maskWord(word) !== word) {
-      return false;
-    } else {
-      return true;
-    }
+    //console.log(maskWord(word), word);
+    return word && maskWord(word) === word;
   };
 
   const handleClick = (value) => {
@@ -87,7 +84,7 @@ function App() {
   };
 
   return (
-    <div className="">
+    <div>
       <Guess phrase={maskWord(word)} />
       <Score max={MAX} current={attempts} />
       <Keyboard handleClick={handleClick} key={game} />
