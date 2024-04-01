@@ -3,7 +3,7 @@ import Keyboard from "./components/Keyboard";
 import Score from "./components/Score";
 import Guess from "./components/Guess";
 import Modal from "./components/Modal";
-import { countryList } from "./data";
+import { countryList, animalNames, gods } from "./data";
 
 const MAX = 5;
 
@@ -13,6 +13,7 @@ function App() {
   const [guesses, setGuesses] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [game, setGame] = useState(0);
+  const [category, setCategory] = useState("countries");
 
   const maskWord = (word) => {
     let masked = "";
@@ -28,24 +29,44 @@ function App() {
   };
 
   const fetchData = () => {
-    const randomElement =
-      countryList[Math.floor(Math.random() * countryList.length)];
+    let list;
+    switch (category) {
+      case "countries":
+        list = countryList;
+        break;
+      case "animals":
+        list = animalNames;
+        break;
+      default:
+        list = gods;
+    }
+    const randomElement = list[Math.floor(Math.random() * list.length)];
 
     return randomElement.toLowerCase();
   };
 
   useEffect(() => {
     setWord(fetchData());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (attempts === MAX) {
+    if (attempts === MAX || isGameOver()) {
       setShowModal(true);
     }
-  }, [attempts]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [attempts, guesses]);
+
+  const isGameOver = () => {
+    if (maskWord(word) !== word) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   const handleClick = (value) => {
-    console.log(value);
+    //console.log(value);
     //only adds if we miss
     if (!word.includes(value)) {
       setAttemps(attempts + 1);
@@ -60,13 +81,26 @@ function App() {
     setWord(fetchData());
     setGame(game + 1);
   };
+
+  const handleCategorySelection = (category) => {
+    setCategory(category);
+  };
+
   return (
     <div className="">
       <Guess phrase={maskWord(word)} />
       <Score max={MAX} current={attempts} />
       <Keyboard handleClick={handleClick} key={game} />
 
-      {showModal && <Modal onClick={handleNewGame} word={word} />}
+      {showModal && (
+        <Modal
+          onClick={handleNewGame}
+          word={word}
+          currentCategory={category}
+          handleCategorySelection={handleCategorySelection}
+          victory={attempts < MAX}
+        />
+      )}
     </div>
   );
 }
