@@ -13,7 +13,7 @@ function App() {
   const [guesses, setGuesses] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [game, setGame] = useState(0);
-  const [category, setCategory] = useState("countries");
+  const [category, setCategory] = useState("gods");
 
   const maskWord = (word) => {
     let masked = "";
@@ -85,6 +85,9 @@ function App() {
 
   return (
     <div>
+      <h1 className="bg-sky-800 text-center text-3xl text-white p-2">
+        Looking for <span className="italic font-bold">{category}</span>
+      </h1>
       <Guess phrase={maskWord(word)} />
       <Score max={MAX} current={attempts} />
       <Keyboard handleClick={handleClick} key={game} />
